@@ -70,26 +70,26 @@ class PlayGame {
       gb.setP2(p2);
       p2_move.setPlayer(p2);
       gb.setTurn(1);
-      System.out.println(gson.toJson(gb));
+      //System.out.println(gson.toJson(gb));
       ctx.result(gson.toJson(gb));
     });
     
     //Update the game board after player2 joins in
     app.get("/joingame", ctx -> {
       ctx.redirect("/tictactoe.html?p=2");
-      System.out.println(gson.toJson(gb));
+      //System.out.println(gson.toJson(gb));
       ctx.result(gson.toJson(gb));
       sendGameBoardToAllPlayers(gson.toJson(gb));
     });
     
     //Update player1's move
     app.post("/move/1", ctx -> {
-      String msg = ctx.body();
-      char[] coord = {msg.split("&")[0].charAt(2), msg.split("&")[1].charAt(2)};
-      int is_valid_move = gb.checkGB(Character.getNumericValue(coord[0]), Character.getNumericValue(coord[1]));
       
-      if (gb.getTurn() == 1 && gb.getWinner() == 0 && gb.isDraw() == false && is_valid_move == 1) 
+      if (gb.getTurn() == 1 && gb.getWinner() == 0 && gb.isDraw() == false) 
       {
+    	String msg = ctx.body();
+        char[] coord = {msg.split("&")[0].charAt(2), msg.split("&")[1].charAt(2)};
+        int is_valid_move = gb.checkGB(Character.getNumericValue(coord[0]), Character.getNumericValue(coord[1]));
     	if (is_valid_move == 1)
     	{
     		gb.setBoardState(Character.getNumericValue(coord[0]), Character.getNumericValue(coord[1]), gb.getp1().getType());
@@ -163,19 +163,19 @@ class PlayGame {
     	
     	ctx.result(gson.toJson(report));
       }
-      System.out.println(gson.toJson(gb));
-      System.out.println(gson.toJson(report));
+      //System.out.println(gson.toJson(gb));
+      //System.out.println(gson.toJson(report));
       
     });
     
     //Update player2's move
     app.post("/move/2", ctx -> {
-      String msg = ctx.body();
-      char[] coord = {msg.split("&")[0].charAt(2), msg.split("&")[1].charAt(2)};
-      int is_valid_move = gb.checkGB(Character.getNumericValue(coord[0]), Character.getNumericValue(coord[1]));
       
-      if (gb.getTurn() == 2 && gb.getWinner() == 0 && gb.isDraw() == false && is_valid_move == 1) 
+      if (gb.getTurn() == 2 && gb.getWinner() == 0 && gb.isDraw() == false) 
       {
+    	String msg = ctx.body();
+        char[] coord = {msg.split("&")[0].charAt(2), msg.split("&")[1].charAt(2)};
+        int is_valid_move = gb.checkGB(Character.getNumericValue(coord[0]), Character.getNumericValue(coord[1]));
         if (is_valid_move == 1)
     	{
     		gb.setBoardState(Character.getNumericValue(coord[0]), Character.getNumericValue(coord[1]), gb.getp2().getType());
@@ -246,8 +246,8 @@ class PlayGame {
       	  }
     	ctx.result(gson.toJson(report));
       }
-      System.out.println(gson.toJson(gb));
-      System.out.println(gson.toJson(report));
+      //System.out.println(gson.toJson(gb));
+      //System.out.println(gson.toJson(report));
       
     });
     

@@ -16,8 +16,10 @@ public class GameBoard {
 
   private boolean isDraw;
   
-  //Default Constructor
-  public GameBoard(){
+  /**
+   * Default Constructor.
+   */
+  public GameBoard() {
 	this.p1 = new Player();
 	this.p2 = new Player();
 	this.gameStarted = false;
@@ -30,7 +32,15 @@ public class GameBoard {
   
   //getter of Board State
   public char[][] getBoardState() {
-	  return boardState;
+	  char[][] copy = new char[3][3];
+	  for (int i=0; i<boardState.length; i++)
+	  {
+		  for (int j=0; j<boardState[0].length; j++)
+		  {
+			  copy[i][j] = boardState[i][j];
+		  }
+	  }
+	  return copy;
   }
   
   //setter of Board State
@@ -43,9 +53,15 @@ public class GameBoard {
 	this.gameStarted = gameStarted;
   }
   
+  //getter of gameStarted
+  public boolean getGameStarted() {
+	  return gameStarted;
+  }
+  
   //setter of player1
   public void setP1(Player p1) {
-	this.p1 = p1;
+	this.p1.setId(p1.getId());
+	this.p1.setType(p1.getType());
   }
   
   //getter of player1
@@ -55,7 +71,8 @@ public class GameBoard {
   
   //setter of player2
   public void setP2(Player p2) {
-	this.p2 = p2;
+	this.p2.setId(p2.getId());
+	this.p2.setType(p2.getType());
   }
   
   //getter of player1
@@ -73,9 +90,13 @@ public class GameBoard {
 	  return turn;
   }
   
-  //check game board state
-  public int checkGB(int x, int y)
-  {
+  /**
+   * check game board state.
+   * @param x the row index.
+   * @param y the column index.
+   * @return whether the input coordinate is a valid one.
+   */
+  public int checkGB(int x, int y) {
 	int x_coord = this.boardState.length;
 	int y_coord = this.boardState[0].length; 
 	
@@ -104,6 +125,7 @@ public class GameBoard {
 	this.winner = winner;
   }
 
+  //getter of Draw status
   public boolean isDraw() {
 	return isDraw;
   }
@@ -113,7 +135,11 @@ public class GameBoard {
 	this.isDraw = isDraw;
   }
   
-  //check whether a specific player is win
+  /**
+   * check whether a specific player is win.
+   * @param player tells which player have just made his move.
+   * @return whether the current player wins.
+   */
   public boolean checkwin(int player) {
 	  boolean check_gameboard = false;
 	  if (player == 1)
@@ -129,7 +155,7 @@ public class GameBoard {
 			  {
 			    if (getBoardState()[i][j] != type)
 				{
-				  break;
+				  j = getBoardState()[i].length;
 				} else
 				{
 				  if (j==getBoardState()[i].length-1)
@@ -151,7 +177,7 @@ public class GameBoard {
 			   {
 			     if (getBoardState()[j][i] != type)
 				 {
-				   break;
+			    	 j=getBoardState().length;
 				 } else
 				 {
 				   if (j == getBoardState().length-1)
@@ -193,7 +219,15 @@ public class GameBoard {
 				   {
 					   if (getBoardState()[j][k] != type)
 					   {
-						   break;
+						   if (j==k)
+						   {
+							   k = -1;
+							   j = 0;
+						   } else 
+						   {
+							   k = 1;
+							   j = 10;
+						   }
 					   }
 					   k -= 1;
 					   j += 1;
@@ -220,7 +254,7 @@ public class GameBoard {
 			  {
 			    if (getBoardState()[i][j] != type)
 				{
-				  break;
+				  j = getBoardState()[i].length;
 				} else
 				{
 				  if (j==getBoardState()[i].length-1)
@@ -242,7 +276,7 @@ public class GameBoard {
 			   {
 			     if (getBoardState()[j][i] != type)
 				 {
-				   break;
+			    	 j=getBoardState().length;
 				 } else
 				 {
 				   if (j == getBoardState().length-1)
@@ -284,7 +318,15 @@ public class GameBoard {
 				   {
 					   if (getBoardState()[j][k] != type)
 					   {
-						   break;
+						   if (j==k)
+						   {
+							   k = -1;
+							   j = 0;
+						   } else 
+						   {
+							   k = 1;
+							   j = 10;
+						   }
 					   }
 					   k -= 1;
 					   j += 1;
@@ -302,11 +344,15 @@ public class GameBoard {
 	return check_gameboard;
   }
   
-  //check whether the game is draw
-  public boolean checkdraw()
-  {
+  /**
+   * check whether the game is draw.
+   * @return whether the game is draw.
+   */
+  public boolean checkdraw() {
 	  if (checkwin(1) || checkwin(2))
 	  {
+		  //System.out.print(checkwin(1));
+		  //System.out.print(checkwin(2));
 		  return false;
 	  }else
 	  {

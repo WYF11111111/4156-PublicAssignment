@@ -12,7 +12,7 @@ import models.Message;
 import models.Move;
 import models.Player;
 
-class PlayGame {
+public class PlayGame {
 
   private static final int PORT_NUMBER = 8080;
 
@@ -50,6 +50,86 @@ class PlayGame {
     app.get("/newgame", ctx -> {
       ctx.redirect("/tictactoe.html");
     });
+    
+    //getter of the current gameboard
+    app.get("/getgameboard", ctx -> {
+    	ctx.result(gson.toJson(gb));
+    });
+    
+    //setter of the current gameboard
+    app.post("/setgameboard", ctx -> {
+    	gb = new GameBoard();
+    	ctx.result(gson.toJson(gb));
+    	sendGameBoardToAllPlayers(gson.toJson(gb));
+    });
+    
+    //add one turn to the current game board
+    app.post("/addturn", ctx -> {
+    	if (gb.getTurn() == 1)
+    	{
+    		gb.setTurn(2);
+    	} else
+    	{
+    		gb.setTurn(1);
+    	}
+    	ctx.result(gson.toJson(gb));
+    	sendGameBoardToAllPlayers(gson.toJson(gb));
+    });
+    
+    //change the is draw state
+    app.post("/changeisdraw", ctx -> {
+    	if (gb.isDraw() == false)
+    	{
+    		gb.setDraw(true);
+    	} else
+    	{
+    		gb.setDraw(false);
+    	}
+    	ctx.result(gson.toJson(gb));
+    	sendGameBoardToAllPlayers(gson.toJson(gb));
+    });
+    
+    //change the get winner state
+    app.post("/win0", ctx -> {
+    	gb.setWinner(0);
+    	ctx.result(gson.toJson(gb));
+    	sendGameBoardToAllPlayers(gson.toJson(gb));
+    });
+    
+    //swap the player type
+    app.post("/swaptype", ctx -> {
+    	Player x = new Player();
+    	x.setType(gb.getp1().getType());
+    	gb.getp1().setType(gb.getp2().getType());
+    	gb.getp2().setType(x.getType());
+    	ctx.result(gson.toJson(gb));
+    	sendGameBoardToAllPlayers(gson.toJson(gb));
+    });
+    
+    //remove a 'O' from game board
+    app.post("/removeO", ctx -> {
+    	int x = 0;
+    	int y = 0;
+    	char[][] temp = gb.getBoardState();
+    	
+    	for (int i=0; i<temp.length; i++)
+    	{
+    		for (int j=0; j<temp[0].length; j++)
+    		{
+    			if (temp[i][j] == 'O')
+    			{
+    					x = i;
+    					y = j;
+    					i = 10;
+    					j = 10;
+    			}
+    		}
+    	}
+    	
+    	gb.setBoardState(x, y, '\u0000');
+    	ctx.result(gson.toJson(gb));
+    	sendGameBoardToAllPlayers(gson.toJson(gb));
+    });
 
     //Initialize the game board and setup Player 1
     app.post("/startgame", ctx -> {
@@ -59,11 +139,10 @@ class PlayGame {
       p1.setType(type);
       gb.setP1(p1);
       p1_move.setPlayer(p1);
-      gb.setGameStarted(true);
       if (type == 'X') {
           p2.setId(2);
           p2.setType('O');
-      } else if (type == 'O') {
+      } else {
         p2.setId(2);
         p2.setType('X');
       }
@@ -76,16 +155,24 @@ class PlayGame {
     
     //Update the game board after player2 joins in
     app.get("/joingame", ctx -> {
-      ctx.redirect("/tictactoe.html?p=2");
-      //System.out.println(gson.toJson(gb));
-      ctx.result(gson.toJson(gb));
-      sendGameBoardToAllPlayers(gson.toJson(gb));
+      if (gb.getp1().getId() == 0)
+      {
+    	  ctx.redirect("/tictactoe.html");
+      } else
+      {
+    	  ctx.redirect("/tictactoe.html?p=2");
+    	  gb.setGameStarted(true);
+    	  //System.out.println(gson.toJson(gb));
+    	  ctx.result(gson.toJson(gb));
+    	  sendGameBoardToAllPlayers(gson.toJson(gb));
+    	  
+      }
     });
     
     //Update player1's move
     app.post("/move/1", ctx -> {
       
-      if (gb.getTurn() == 1 && gb.getWinner() == 0 && gb.isDraw() == false) 
+      if (gb.getTurn() == 1 && gb.getWinner() == 0 && gb.isDraw() == false && gb.getGameStarted()) 
       {
     	String msg = ctx.body();
         char[] coord = {msg.split("&")[0].charAt(2), msg.split("&")[1].charAt(2)};
@@ -115,11 +202,10 @@ class PlayGame {
     				report.setCode(300);
     				report.setMoveValidity(true);
     				report.setMessage("Game Draw!");
-    				gb.setGameStarted(false);
     				gb.setDraw(true);
     				sendGameBoardToAllPlayers(gson.toJson(gb));
     				
-    			} else if (game_result == false && is_draw == false)
+    			} else
     			{
     				//regular move message
     				report.setCode(200);
@@ -153,6 +239,12 @@ class PlayGame {
     		report.setCode(100);
     		report.setMoveValidity(false);
     		report.setMessage("This is player2\'s Turn!");
+    	} else if (gb.getGameStarted() == false)
+    	{
+    		//error message
+    		report.setCode(800);
+    		report.setMoveValidity(false);
+    		report.setMessage("Please wait player2 to join!");
     	} else
     	{
     		//error message
@@ -201,10 +293,9 @@ class PlayGame {
     				report.setCode(300);
     				report.setMoveValidity(true);
     				report.setMessage("Game Draw!");
-    				gb.setGameStarted(false);
     				gb.setDraw(true);
     				sendGameBoardToAllPlayers(gson.toJson(gb));
-    			} else if (game_result == false && is_draw == false)
+    			} else
     			{
     				//regular move message
     				report.setCode(200);

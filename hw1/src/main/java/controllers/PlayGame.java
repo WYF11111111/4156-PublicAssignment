@@ -1,16 +1,18 @@
 package controllers;
 
+import com.google.gson.Gson;
 import io.javalin.Javalin;
 import java.io.IOException;
 import java.util.Queue;
-import org.eclipse.jetty.websocket.api.Session;
-
-import com.google.gson.Gson;
-
 import models.GameBoard;
 import models.Message;
 import models.Move;
 import models.Player;
+import org.eclipse.jetty.websocket.api.Session;
+
+
+
+
 
 public class PlayGame {
 
@@ -48,6 +50,9 @@ public class PlayGame {
 
     //start a new game
     app.get("/newgame", ctx -> {
+      gb = new GameBoard();
+      ctx.result(gson.toJson(gb));
+      sendGameBoardToAllPlayers(gson.toJson(gb));
       ctx.redirect("/tictactoe.html");
     });
     
@@ -65,11 +70,9 @@ public class PlayGame {
     
     //add one turn to the current game board
     app.post("/addturn", ctx -> {
-    	if (gb.getTurn() == 1)
-    	{
+    	if (gb.getTurn() == 1) {
     		gb.setTurn(2);
-    	} else
-    	{
+    	} else {
     		gb.setTurn(1);
     	}
     	ctx.result(gson.toJson(gb));
@@ -78,11 +81,9 @@ public class PlayGame {
     
     //change the is draw state
     app.post("/changeisdraw", ctx -> {
-    	if (gb.isDraw() == false)
-    	{
+    	if (gb.isDraw() == false) {
     		gb.setDraw(true);
-    	} else
-    	{
+    	} else {
     		gb.setDraw(false);
     	}
     	ctx.result(gson.toJson(gb));
@@ -112,12 +113,9 @@ public class PlayGame {
     	int y = 0;
     	char[][] temp = gb.getBoardState();
     	
-    	for (int i=0; i<temp.length; i++)
-    	{
-    		for (int j=0; j<temp[0].length; j++)
-    		{
-    			if (temp[i][j] == 'O')
-    			{
+    	for (int i=0; i<temp.length; i++) {
+    		for (int j=0; j<temp[0].length; j++) {
+    			if (temp[i][j] == 'O') {
     					x = i;
     					y = j;
     					i = 10;
@@ -155,11 +153,9 @@ public class PlayGame {
     
     //Update the game board after player2 joins in
     app.get("/joingame", ctx -> {
-      if (gb.getp1().getId() == 0)
-      {
+      if (gb.getp1().getId() == 0) {
     	  ctx.redirect("/tictactoe.html");
-      } else
-      {
+      } else {
     	  ctx.redirect("/tictactoe.html?p=2");
     	  gb.setGameStarted(true);
     	  //System.out.println(gson.toJson(gb));
@@ -172,21 +168,21 @@ public class PlayGame {
     //Update player1's move
     app.post("/move/1", ctx -> {
       
-      if (gb.getTurn() == 1 && gb.getWinner() == 0 && gb.isDraw() == false && gb.getGameStarted()) 
-      {
+      if (gb.getTurn() == 1 && gb.getWinner() == 0 && gb.isDraw() == false && gb.getGameStarted()) {
     	String msg = ctx.body();
         char[] coord = {msg.split("&")[0].charAt(2), msg.split("&")[1].charAt(2)};
-        int is_valid_move = gb.checkGB(Character.getNumericValue(coord[0]), Character.getNumericValue(coord[1]));
-    	if (is_valid_move == 1)
-    	{
-    		gb.setBoardState(Character.getNumericValue(coord[0]), Character.getNumericValue(coord[1]), gb.getp1().getType());
+        int isvalidmove = gb.checkGB(Character.getNumericValue(coord[0]), 
+        						 Character.getNumericValue(coord[1]));
+    	if (isvalidmove == 1) {
+    		gb.setBoardState(Character.getNumericValue(coord[0]), 
+    						 Character.getNumericValue(coord[1]), 
+    						 gb.getp1().getType());
     		gb.setTurn(2);
     		p1_move.setMoveX(Character.getNumericValue(coord[0]));
     		p1_move.setMoveY(Character.getNumericValue(coord[1]));
     		
-    		boolean game_result = gb.checkwin(1);
-    		if (game_result)
-    		{
+    		boolean gameresult = gb.checkwin(1);
+    		if (gameresult) {
     			//win message
     			report.setCode(400);
     			report.setMoveValidity(true);
@@ -195,9 +191,8 @@ public class PlayGame {
     			gb.setWinner(1);
     			sendGameBoardToAllPlayers(gson.toJson(gb));
     		} else {
-    			boolean is_draw = gb.checkdraw();
-    			if (is_draw)
-    			{	
+    			boolean isdraw = gb.checkdraw();
+    			if (isdraw) {	
     				//draw message
     				report.setCode(300);
     				report.setMoveValidity(true);
@@ -205,8 +200,7 @@ public class PlayGame {
     				gb.setDraw(true);
     				sendGameBoardToAllPlayers(gson.toJson(gb));
     				
-    			} else
-    			{
+    			} else {
     				//regular move message
     				report.setCode(200);
     				report.setMoveValidity(true);
@@ -216,15 +210,13 @@ public class PlayGame {
     			}
     		}
     		
-    	} else if(is_valid_move == -1)
-    	{
+    	} else if(isvalidmove == -1) {
     		//error message for out of range
     		report.setCode(700);
         	report.setMoveValidity(false);
     		report.setMessage("Out of Range!");
     		sendGameBoardToAllPlayers(gson.toJson(gb));
-    	} else
-    	{
+    	} else {
     		//error message for already occupied places
     		report.setCode(600);
 	    	report.setMoveValidity(false);
@@ -233,20 +225,17 @@ public class PlayGame {
     	}
 		ctx.result(gson.toJson(report));
       } else {
-    	if (gb.getTurn() == 2)
-    	{
+    	if (gb.getTurn() == 2) {
     		//error message
     		report.setCode(100);
     		report.setMoveValidity(false);
     		report.setMessage("This is player2\'s Turn!");
-    	} else if (gb.getGameStarted() == false)
-    	{
+    	} else if (gb.getGameStarted() == false) {
     		//error message
     		report.setCode(800);
     		report.setMoveValidity(false);
     		report.setMessage("Please wait player2 to join!");
-    	} else
-    	{
+    	} else {
     		//error message
     		report.setCode(500);
     		report.setMoveValidity(false);
@@ -263,21 +252,21 @@ public class PlayGame {
     //Update player2's move
     app.post("/move/2", ctx -> {
       
-      if (gb.getTurn() == 2 && gb.getWinner() == 0 && gb.isDraw() == false) 
-      {
+      if (gb.getTurn() == 2 && gb.getWinner() == 0 && gb.isDraw() == false) {
     	String msg = ctx.body();
         char[] coord = {msg.split("&")[0].charAt(2), msg.split("&")[1].charAt(2)};
-        int is_valid_move = gb.checkGB(Character.getNumericValue(coord[0]), Character.getNumericValue(coord[1]));
-        if (is_valid_move == 1)
-    	{
-    		gb.setBoardState(Character.getNumericValue(coord[0]), Character.getNumericValue(coord[1]), gb.getp2().getType());
+        int isvalidmove = gb.checkGB(Character.getNumericValue(coord[0]), 
+        						 Character.getNumericValue(coord[1]));
+        if (isvalidmove == 1) {
+    		gb.setBoardState(Character.getNumericValue(coord[0]), 
+    						 Character.getNumericValue(coord[1]), 
+    						 gb.getp2().getType());
     		gb.setTurn(1);
     		p2_move.setMoveX(Character.getNumericValue(coord[0]));
     		p2_move.setMoveY(Character.getNumericValue(coord[1]));
     		
-    		boolean game_result = gb.checkwin(2);
-    		if (game_result)
-    		{
+    		boolean gameresult = gb.checkwin(2);
+    		if (gameresult) {
     			//win message
     			report.setCode(400);
     			report.setMoveValidity(true);
@@ -286,17 +275,15 @@ public class PlayGame {
     			gb.setWinner(2);
     			sendGameBoardToAllPlayers(gson.toJson(gb));
     		} else {
-    			boolean is_draw = gb.checkdraw();
-    			if (is_draw)
-    			{	
+    			boolean isdraw = gb.checkdraw();
+    			if (isdraw) {	
     				//draw message
     				report.setCode(300);
     				report.setMoveValidity(true);
     				report.setMessage("Game Draw!");
     				gb.setDraw(true);
     				sendGameBoardToAllPlayers(gson.toJson(gb));
-    			} else
-    			{
+    			} else {
     				//regular move message
     				report.setCode(200);
     				report.setMoveValidity(true);
@@ -305,15 +292,13 @@ public class PlayGame {
     			}
     		}
     		
-    	} else if(is_valid_move == -1)
-    	{
+    	} else if(isvalidmove == -1) {
     		//error message for out of range
     		report.setCode(700);
         	report.setMoveValidity(false);
     		report.setMessage("Out of Range!");
     		sendGameBoardToAllPlayers(gson.toJson(gb));
-    	} else
-    	{
+    	} else {
     		//error message for already occupied places
     		report.setCode(600);
 	    	report.setMoveValidity(false);
@@ -322,14 +307,12 @@ public class PlayGame {
     	}
         ctx.result(gson.toJson(report));
       } else {
-    	  if (gb.getTurn() == 1)
-      	  {
+    	  if (gb.getTurn() == 1) {
       		//error message
       		report.setCode(100);
       		report.setMoveValidity(false);
       		report.setMessage("This is player1\'s Turn!");
-      	  } else
-      	  {
+      	  } else {
       		//error message
       		report.setCode(500);
       		report.setMoveValidity(false);

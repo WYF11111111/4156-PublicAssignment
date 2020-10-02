@@ -24,7 +24,9 @@ public class GameBoard {
 	this.p2 = new Player();
 	this.gameStarted = false;
 	this.setTurn(0);
-	this.boardState = new char[][]{ {'\u0000','\u0000','\u0000'},{'\u0000','\u0000','\u0000'},{'\u0000','\u0000','\u0000'} };
+	this.boardState = new char[][]{ {'\u0000','\u0000','\u0000'},
+								  {'\u0000','\u0000','\u0000'},
+								  {'\u0000','\u0000','\u0000'} };
 	this.setWinner(0);
 	this.isDraw = false;
   }
@@ -33,10 +35,8 @@ public class GameBoard {
   //getter of Board State
   public char[][] getBoardState() {
 	  char[][] copy = new char[3][3];
-	  for (int i=0; i<boardState.length; i++)
-	  {
-		  for (int j=0; j<boardState[0].length; j++)
-		  {
+	  for (int i=0; i<boardState.length; i++) {
+		  for (int j=0; j<boardState[0].length; j++) {
 			  copy[i][j] = boardState[i][j];
 		  }
 	  }
@@ -97,19 +97,15 @@ public class GameBoard {
    * @return whether the input coordinate is a valid one.
    */
   public int checkGB(int x, int y) {
-	int x_coord = this.boardState.length;
-	int y_coord = this.boardState[0].length; 
+	int xcoord = this.boardState.length;
+	int ycoord = this.boardState[0].length; 
 	
-	if (x>=x_coord || y>=y_coord)
-	{
+	if (x>=xcoord || y>=ycoord) {
 		return -1;
-	} else
-	{
-		if (this.boardState[x][y] == 'O' || this.boardState[x][y] == 'X')
-		{
+	} else {
+		if (this.boardState[x][y] == 'O' || this.boardState[x][y] == 'X') {
 			return 0;
-		} else
-		{
+		} else {
 			return 1;
 		}
 	}
@@ -141,27 +137,20 @@ public class GameBoard {
    * @return whether the current player wins.
    */
   public boolean checkwin(int player) {
-	  boolean check_gameboard = false;
-	  if (player == 1)
-	  {
+	  boolean checkgameboard = false;
+	  if (player == 1) {
 		  char type = getp1().getType();
 		  
 	      //check whether the row indicates player1's victory
-		  for (int i=0; i<getBoardState().length; i++)
-		  {
-		    if (getBoardState()[i][0] == type)
-			{
-			  for (int j=1; j<getBoardState()[i].length; j++)
-			  {
-			    if (getBoardState()[i][j] != type)
-				{
+		  for (int i=0; i<getBoardState().length; i++) {
+		    if (getBoardState()[i][0] == type) {
+			  for (int j=1; j<getBoardState()[i].length; j++) {
+			    if (getBoardState()[i][j] != type) {
 				  j = getBoardState()[i].length;
-				} else
-				{
-				  if (j==getBoardState()[i].length-1)
-				  {
-				    check_gameboard = true;
-					return check_gameboard;
+				} else {
+				  if (j==getBoardState()[i].length-1) {
+				    checkgameboard = true;
+					return checkgameboard;
 				  }
 				}
 	  	  	  }
@@ -169,19 +158,13 @@ public class GameBoard {
 		   }
 			  
 		   //check whether the column indicates player1's victory
-		   for (int i=0; i<getBoardState()[0].length; i++)
-		   {
-		     if (getBoardState()[0][i] == type)
-			 {
-			   for (int j=1; j<getBoardState().length; j++)
-			   {
-			     if (getBoardState()[j][i] != type)
-				 {
+		   for (int i=0; i<getBoardState()[0].length; i++) {
+		     if (getBoardState()[0][i] == type) {
+			   for (int j=1; j<getBoardState().length; j++) {
+			     if (getBoardState()[j][i] != type) {
 			    	 j=getBoardState().length;
-				 } else
-				 {
-				   if (j == getBoardState().length-1)
-				   {
+				 } else {
+				   if (j == getBoardState().length-1) {
 				     check_gameboard = true;
 					 return check_gameboard;
 				   }
@@ -191,40 +174,29 @@ public class GameBoard {
 	       }
 			  
 		   //check whether the diagonal indicates player1's victory
-		   for (int i=0; i<getBoardState()[0].length; i++)
-		   {
-		     if (getBoardState()[0][i] == type)
-			 {
-			   if (i == 0)
-			   {
+		   for (int i=0; i<getBoardState()[0].length; i++) {
+		     if (getBoardState()[0][i] == type) {
+			   if (i == 0) {
 				   int k = i+1;
-				   while(k < getBoardState().length)
-				   {
-					   if (getBoardState()[k][k] != type)
-					   {
+				   while(k < getBoardState().length) {
+					   if (getBoardState()[k][k] != type) {
 						   break;
 					   }
 					   k += 1;
 				   }
-				   if (k == getBoardState().length)
-				   {
+				   if (k == getBoardState().length) {
 					   check_gameboard = true;
 					   return check_gameboard;
 				   }
-			   } else if (i == getBoardState()[0].length-1)
-			   {
+			   } else if (i == getBoardState()[0].length-1) {
 				   int k = i-1;
 				   int j = 1;
-				   while(k>=0 && j<getBoardState().length)
-				   {
-					   if (getBoardState()[j][k] != type)
-					   {
-						   if (j==k)
-						   {
+				   while(k>=0 && j<getBoardState().length) {
+					   if (getBoardState()[j][k] != type) {
+						   if (j==k) {
 							   k = -1;
 							   j = 0;
-						   } else 
-						   {
+						   } else {
 							   k = 1;
 							   j = 10;
 						   }
@@ -232,8 +204,7 @@ public class GameBoard {
 					   k -= 1;
 					   j += 1;
 				   }
-				   if (k < 0 && j == getBoardState().length)
-				   {
+				   if (k < 0 && j == getBoardState().length) {
 					   check_gameboard = true;
 					   return check_gameboard;
 				   }
@@ -241,24 +212,17 @@ public class GameBoard {
 		     }
 	       }
 
-	  } else if (player == 2)
-	  {
+	  } else if (player == 2) {
 		  char type = getp2().getType();
 		  
 	      //check whether the row indicates player2's victory
-		  for (int i=0; i<getBoardState().length; i++)
-		  {
-		    if (getBoardState()[i][0] == type)
-			{
-			  for (int j=1; j<getBoardState()[i].length; j++)
-			  {
-			    if (getBoardState()[i][j] != type)
-				{
+		  for (int i=0; i<getBoardState().length; i++) {
+		    if (getBoardState()[i][0] == type) {
+			  for (int j=1; j<getBoardState()[i].length; j++) {
+			    if (getBoardState()[i][j] != type) {
 				  j = getBoardState()[i].length;
-				} else
-				{
-				  if (j==getBoardState()[i].length-1)
-				  {
+				} else {
+				  if (j==getBoardState()[i].length-1) {
 				    check_gameboard = true;
 					return check_gameboard;
 				  }
@@ -268,19 +232,13 @@ public class GameBoard {
 		   }
 			  
 		   //check whether the column indicates player2's victory
-		   for (int i=0; i<getBoardState()[0].length; i++)
-		   {
-		     if (getBoardState()[0][i] == type)
-			 {
-			   for (int j=1; j<getBoardState().length; j++)
-			   {
-			     if (getBoardState()[j][i] != type)
-				 {
+		   for (int i=0; i<getBoardState()[0].length; i++) {
+		     if (getBoardState()[0][i] == type) {
+			   for (int j=1; j<getBoardState().length; j++) {
+			     if (getBoardState()[j][i] != type) {
 			    	 j=getBoardState().length;
-				 } else
-				 {
-				   if (j == getBoardState().length-1)
-				   {
+				 } else {
+				   if (j == getBoardState().length-1) {
 				     check_gameboard = true;
 					 return check_gameboard;
 				   }
@@ -290,40 +248,29 @@ public class GameBoard {
 	       }
 			  
 		   //check whether the diagonal indicates player2's victory
-		   for (int i=0; i<getBoardState()[0].length; i++)
-		   {
-		     if (getBoardState()[0][i] == type)
-			 {
-			   if (i == 0)
-			   {
+		   for (int i=0; i<getBoardState()[0].length; i++) {
+		     if (getBoardState()[0][i] == type) {
+			   if (i == 0) {
 				   int k = i+1;
-				   while(k < getBoardState().length)
-				   {
-					   if (getBoardState()[k][k] != type)
-					   {
+				   while(k < getBoardState().length) {
+					   if (getBoardState()[k][k] != type) {
 						   break;
 					   }
 					   k += 1;
 				   }
-				   if (k == getBoardState().length)
-				   {
+				   if (k == getBoardState().length) {
 					   check_gameboard = true;
 					   return check_gameboard;
 				   }
-			   } else if (i == getBoardState()[0].length-1)
-			   {
+			   } else if (i == getBoardState()[0].length-1) {
 				   int k = i-1;
 				   int j = 1;
-				   while(k>=0 && j<getBoardState().length)
-				   {
-					   if (getBoardState()[j][k] != type)
-					   {
-						   if (j==k)
-						   {
+				   while(k>=0 && j<getBoardState().length) {
+					   if (getBoardState()[j][k] != type) {
+						   if (j==k) {
 							   k = -1;
 							   j = 0;
-						   } else 
-						   {
+						   } else {
 							   k = 1;
 							   j = 10;
 						   }
@@ -331,8 +278,7 @@ public class GameBoard {
 					   k -= 1;
 					   j += 1;
 				   }
-				   if (k < 0 && j == getBoardState().length)
-				   {
+				   if (k < 0 && j == getBoardState().length) {
 					   check_gameboard = true;
 					   return check_gameboard;
 				   }
@@ -349,19 +295,14 @@ public class GameBoard {
    * @return whether the game is draw.
    */
   public boolean checkdraw() {
-	  if (checkwin(1) || checkwin(2))
-	  {
+	  if (checkwin(1) || checkwin(2)) {
 		  //System.out.print(checkwin(1));
 		  //System.out.print(checkwin(2));
 		  return false;
-	  }else
-	  {
-		  for (int i=0; i<getBoardState().length; i++)
-		  {
-			  for (int j=0; j<getBoardState()[i].length; j++)
-			  {
-				  if (getBoardState()[i][j] == '\u0000')
-				  {
+	  }else {
+		  for (int i=0; i<getBoardState().length; i++) {
+			  for (int j=0; j<getBoardState()[i].length; j++) {
+				  if (getBoardState()[i][j] == '\u0000') {
 					  return false;
 				  }
 			  }

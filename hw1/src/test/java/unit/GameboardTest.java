@@ -75,12 +75,9 @@ public class GameboardTest {
 		char[][][] gamespace = new char[512][3][3];
 		boolean[] gameresult = new boolean[512];
 		
-		for (int i=0; i<rowspace.length;i++)
-		{
-			for (int j=0; j<rowspace.length;j++)
-			{
-				for (int k=0; k<rowspace.length;k++)
-				{
+		for (int i=0; i<rowspace.length;i++) {
+			for (int j=0; j<rowspace.length;j++) {
+				for (int k=0; k<rowspace.length;k++) {
 					gamespace[count][0] = rowspace[i];
 					gamespace[count][1] = rowspace[j];
 					gamespace[count][2] = rowspace[k];
@@ -89,24 +86,18 @@ public class GameboardTest {
 			}
 		}
 		
-		for (int i=0; i<gamespace.length; i++)
-		{
-			for (int j=0; j<gamespace[i].length; j++)
-			{
-				for (int k=0; k<gamespace[i][j].length; k++)
-				{
+		for (int i=0; i<gamespace.length; i++) {
+			for (int j=0; j<gamespace[i].length; j++) {
+				for (int k=0; k<gamespace[i][j].length; k++) {
 					gb.setBoardState(j, k, gamespace[i][j][k]);
 				}
 			}
 			gameresult[i] = gb.checkwin(player);
 		}
 		
-		for (int i=0; i<gamespace.length; i++)
-		{
-			for (int j=0; j<gamespace[i].length; j++)
-			{
-				for (int k=0; k<gamespace[i][j].length; k++)
-				{
+		for (int i=0; i<gamespace.length; i++) {
+			for (int j=0; j<gamespace[i].length; j++) {
+				for (int k=0; k<gamespace[i][j].length; k++) {
 					gb.setBoardState(j, k, gamespace[i][j][k]);
 				}
 			}
@@ -126,21 +117,18 @@ public class GameboardTest {
 		p.setType(type);
 		gb.setP1(p);
 		
-		for (int i=0; i<gb.getBoardState().length; i++)
-		{
+		for (int i=0; i<gb.getBoardState().length; i++) {
 			gb.setBoardState(i, 0, type);
 		}
 		boolean result = gb.checkwin(player);
 		assertEquals(true, result);
-		for (int i=0; i<gb.getBoardState().length; i++)
-		{
+		for (int i=0; i<gb.getBoardState().length; i++) {
 			gb.setBoardState(i, 0, 'X');
 			gb.setBoardState(i, 1, type);
 		}
 		result = gb.checkwin(player);
 		assertEquals(true, result);
-		for (int i=0; i<gb.getBoardState().length; i++)
-		{
+		for (int i=0; i<gb.getBoardState().length; i++) {
 			gb.setBoardState(i, 1, 'X');
 			gb.setBoardState(i, 2, type);
 		}
@@ -188,21 +176,18 @@ public class GameboardTest {
 		p.setType(type);
 		gb.setP2(p);
 		
-		for (int i=0; i<gb.getBoardState()[0].length; i++)
-		{
+		for (int i=0; i<gb.getBoardState()[0].length; i++) {
 			gb.setBoardState(0, i, type);
 		}
 		boolean result = gb.checkwin(player);
 		assertEquals(true, result);
-		for (int i=0; i<gb.getBoardState()[0].length; i++)
-		{
+		for (int i=0; i<gb.getBoardState()[0].length; i++) {
 			gb.setBoardState(0, i, 'X');
 			gb.setBoardState(1, i, type);
 		}
 		result = gb.checkwin(player);
 		assertEquals(true, result);
-		for (int i=0; i<gb.getBoardState()[0].length; i++)
-		{
+		for (int i=0; i<gb.getBoardState()[0].length; i++) {
 			gb.setBoardState(1, i, 'X');
 			gb.setBoardState(2, i, type);
 		}
@@ -234,21 +219,18 @@ public class GameboardTest {
 		p.setType(type);
 		gb.setP2(p);
 		
-		for (int i=0; i<gb.getBoardState().length; i++)
-		{
+		for (int i=0; i<gb.getBoardState().length; i++) {
 			gb.setBoardState(i, 0, type);
 		}
 		boolean result = gb.checkwin(player);
 		assertEquals(true, result);
-		for (int i=0; i<gb.getBoardState().length; i++)
-		{
+		for (int i=0; i<gb.getBoardState().length; i++) {
 			gb.setBoardState(i, 0, 'X');
 			gb.setBoardState(i, 1, type);
 		}
 		result = gb.checkwin(player);
 		assertEquals(true, result);
-		for (int i=0; i<gb.getBoardState().length; i++)
-		{
+		for (int i=0; i<gb.getBoardState().length; i++) {
 			gb.setBoardState(i, 1, 'X');
 			gb.setBoardState(i, 2, type);
 		}

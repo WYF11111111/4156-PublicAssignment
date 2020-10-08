@@ -32,7 +32,9 @@ public class GameBoard {
   }
 
   
-  //getter of Board State
+  /*
+   * This is the getter of the board state
+   */
   public char[][] getBoardState() {
 	  char[][] copy = new char[3][3];
 	  for (int i=0; i<boardState.length; i++) {
@@ -165,8 +167,8 @@ public class GameBoard {
 			    	 j=getBoardState().length;
 				 } else {
 				   if (j == getBoardState().length-1) {
-				     check_gameboard = true;
-					 return check_gameboard;
+				     checkgameboard = true;
+					 return checkgameboard;
 				   }
 			     }
 		       }
@@ -185,8 +187,8 @@ public class GameBoard {
 					   k += 1;
 				   }
 				   if (k == getBoardState().length) {
-					   check_gameboard = true;
-					   return check_gameboard;
+					   checkgameboard = true;
+					   return checkgameboard;
 				   }
 			   } else if (i == getBoardState()[0].length-1) {
 				   int k = i-1;
@@ -205,8 +207,8 @@ public class GameBoard {
 					   j += 1;
 				   }
 				   if (k < 0 && j == getBoardState().length) {
-					   check_gameboard = true;
-					   return check_gameboard;
+					   checkgameboard = true;
+					   return checkgameboard;
 				   }
 			   }
 		     }
@@ -223,8 +225,8 @@ public class GameBoard {
 				  j = getBoardState()[i].length;
 				} else {
 				  if (j==getBoardState()[i].length-1) {
-				    check_gameboard = true;
-					return check_gameboard;
+				    checkgameboard = true;
+					return checkgameboard;
 				  }
 				}
 	  	  	  }
@@ -239,8 +241,8 @@ public class GameBoard {
 			    	 j=getBoardState().length;
 				 } else {
 				   if (j == getBoardState().length-1) {
-				     check_gameboard = true;
-					 return check_gameboard;
+				     checkgameboard = true;
+					 return checkgameboard;
 				   }
 			     }
 		       }
@@ -259,8 +261,8 @@ public class GameBoard {
 					   k += 1;
 				   }
 				   if (k == getBoardState().length) {
-					   check_gameboard = true;
-					   return check_gameboard;
+					   checkgameboard = true;
+					   return checkgameboard;
 				   }
 			   } else if (i == getBoardState()[0].length-1) {
 				   int k = i-1;
@@ -279,15 +281,15 @@ public class GameBoard {
 					   j += 1;
 				   }
 				   if (k < 0 && j == getBoardState().length) {
-					   check_gameboard = true;
-					   return check_gameboard;
+					   checkgameboard = true;
+					   return checkgameboard;
 				   }
 			   }
 		     }
 	       }
 
 	  }
-	return check_gameboard;
+	return checkgameboard;
   }
   
   /**
